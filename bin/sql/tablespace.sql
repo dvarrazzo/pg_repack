@@ -6,8 +6,10 @@ SET client_min_messages = warning;
 -- Note: in order to pass this test you must create a tablespace called 'testts'
 --
 
-SELECT spcname FROM pg_tablespace WHERE spcname = 'testts';
--- If the query above failed you must create the 'testts' tablespace;
+SELECT
+    case when 0 = (select count(*) FROM pg_tablespace WHERE spcname = 'testts')
+    then 'You must create a ''testts'' tablespace to run these tests'::text
+    else null end;
 
 CREATE TABLE testts1 (id serial primary key, data text);
 CREATE INDEX testts1_partial_idx on testts1 (id) where (id > 0);
